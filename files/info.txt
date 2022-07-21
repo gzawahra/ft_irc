@@ -1,0 +1,4 @@
+---------INFO--------
+Server name : IRCSERV
+Version : 0.1
+Language: C++98

@@ -8,6 +8,12 @@
 #include "../../Server/Server.hpp"
 #include "../Client.hpp"
 
+/////////////////
+// TOPIC	/////
+/////////////////
+
+//The TOPIC command lets a chanop set a channel’s topic, and lets anyone view the topic.
+//TOPIC <channel> [<topic>]
 void TOPIC(irc::Command *command)
 {
 	if (!command->getParameters().size())

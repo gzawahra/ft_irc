@@ -2,6 +2,19 @@
 #include "../User/Client.hpp"
 #include <algorithm>
 
+
+//             Channel modes
+//b <person>        ban somebody, <person> in "nick!user@host" form
+//i                channel is invite-only
+//l <number>        channel is limited, <number> users allowed max
+//m                channel is moderated, (only chanops can talk)
+//n                external /MSGs to channel are not allowed
+//o <nickname>        makes <nickname> a channel operator
+//p                channel is private
+//s                channel is secret
+//t                topic limited, only chanops may change it
+//k <key>                set secret key for a channel
+
 irc::Channel::Channel()
 	: mode("n") {}
 

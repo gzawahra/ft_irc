@@ -153,7 +153,7 @@ std::string ERR_UMODEUNKNOWNFLAG() { return ":Unknown MODE flag"; }
 /******************************************************************************/
 /*                                   5**                                      */
 /******************************************************************************/
-std::string ERR_USERSDONTMATCH() { return ":Cant change mode for other users"; }
+std::string ERR_USERSDONTMATCH() { return ":Can't change mode for other users"; }
 
 //IRCv3
 /******************************************************************************/

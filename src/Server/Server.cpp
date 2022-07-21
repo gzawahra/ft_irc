@@ -1,5 +1,5 @@
 #include "Server.hpp"
-#include "../User/User.hpp"
+#include "../User/Client.hpp"
 #include "../Utils/Utils.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>

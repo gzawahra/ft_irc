@@ -1,5 +1,5 @@
 #include "Display.hpp"
-#include "../../Utils/Utils.hpp"
+#include "../Utils/Utils.hpp"
 #include <iostream>
 
 void irc::Display::clearScreen() { std::cout << "\033[2J" << std::flush; }

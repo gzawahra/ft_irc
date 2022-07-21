@@ -1,6 +1,6 @@
 #include "Command.hpp"
 #include "../../Server/Server.hpp"
-#include "../User.hpp"
+#include "../Client.hpp"
 #include <algorithm>
 
 void NOTICE(irc::Command *command)

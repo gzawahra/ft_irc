@@ -6,7 +6,7 @@
 #include "Command.hpp"
 #include "../../Utils/Utils.hpp"
 #include "../../Server/Server.hpp"
-#include "../User.hpp"
+#include "../Client.hpp"
 
 void TOPIC(irc::Command *command)
 {

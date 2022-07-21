@@ -1,5 +1,5 @@
 #include "Channel.hpp"
-#include "../../User/User.hpp"
+#include "../User/Client.hpp"
 #include <algorithm>
 
 irc::Channel::Channel()

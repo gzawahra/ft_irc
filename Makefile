@@ -5,43 +5,28 @@ DIRECTORY_SOURCE	=	src
 DIRECTORY_OBJECT	=	objects
 
 FILES_CHECK			=	Utils/Utils.hpp \
-						Server/Config/Config.hpp \
-						Server/Display/Display.hpp \
-						Server/Channel/Channel.hpp \
+						Server/Config.hpp \
+						Server/Display.hpp \
+						Server/Channel.hpp \
 						Server/Server.hpp \
 						User/Command/Command.hpp \
-						User/User.hpp
+						User/Client.hpp
+
 FILES_SOURCE		=	Utils/Utils.cpp \
-						Server/Config/Config.cpp \
-						Server/Display/Display.cpp \
-						Server/Channel/Channel.cpp \
+						Server/Config.cpp \
+						Server/Display.cpp \
+						Server/Channel.cpp \
 						Server/Server.cpp \
-						User/Command/Connection/PASS.cpp \
-						User/Command/Connection/NICK.cpp \
-						User/Command/Connection/USER.cpp \
-						User/Command/Connection/OPER.cpp \
-						User/Command/Connection/MODE.cpp \
-						User/Command/Connection/SERVICE.cpp \
-						User/Command/Connection/QUIT.cpp \
-						User/Command/Connection/SQUIT.cpp \
+						User/Command/Connection.cpp \
 						User/Command/Channel.cpp \
 						User/Command/Sending.cpp \
 						User/Command/Server.cpp \
 						User/Command/Service.cpp \
 						User/Command/User.cpp \
 						User/Command/Misc.cpp \
-						User/Command/Optional/AWAY.cpp \
-						User/Command/Optional/REHASH.cpp \
-						User/Command/Optional/DIE.cpp \
-						User/Command/Optional/RESTART.cpp \
-						User/Command/Optional/SUMMON.cpp \
-						User/Command/Optional/USERS.cpp \
-						User/Command/Optional/WALLOPS.cpp \
-						User/Command/Optional/USERHOST.cpp \
-						User/Command/Optional/ISON.cpp \
 						User/Command/Command.cpp \
 						User/Command/replies.cpp \
-						User/User.cpp \
+						User/Client.cpp \
 						main.cpp
 
 COMPILE				=	clang++

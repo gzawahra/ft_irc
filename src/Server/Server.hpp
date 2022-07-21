@@ -1,9 +1,9 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "Config/Config.hpp"
-#include "Display/Display.hpp"
-#include "Channel/Channel.hpp"
+#include "Config.hpp"
+#include "Display.hpp"
+#include "Channel.hpp"
 #include <string>
 #include <map>
 #include <vector>

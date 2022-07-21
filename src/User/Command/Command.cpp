@@ -1,5 +1,5 @@
 #include "Command.hpp"
-#include "../User.hpp"
+#include "../Client.hpp"
 #include "../../Utils/Utils.hpp"
 #include <sstream>
 

@@ -1,6 +1,10 @@
 #!/bin/bash
 make re
+if [ $USER = "gz" ] ; then
 terminator -e "./ircserv 6667 hello"
+else
+xterm -e "./ircserv 6667 hello"
+fi
 sleep 3s
 nc 127.0.0.1 6667 < ./files/test_cmds
 echo "Press any key to continue"

@@ -1,0 +1,14 @@
+PASS hello
+NICK gz
+USER gz * *:gz
+VERSION
+JOIN #general
+LIST
+PRIVMSG #general :hello
+PRIVMSG gz :goodbye
+JOIN #specific
+PRIVMSG #specific :hello2
+PRIVMSG test :sup
+PART #general
+PART #specific
+QUIT

@@ -3,7 +3,7 @@
 #include "../../Utils/Utils.hpp"
 #include "../../Server/Server.hpp"
 
-void WHOWAS(class irc::Command *command)
+void WHOWAS(class irc::Command *command)//pareil que whois mais dans le cas ou le user a change de nick ou a quitte lirc
 {
 	size_t pos = 0, tmp = 0, count = 0;
 	bool has_print = false, has_count = false;
@@ -49,7 +49,7 @@ void WHOWAS(class irc::Command *command)
 	return command->reply(369, command->getParameters()[0]);
 }
 
-void WHOIS(class irc::Command *command)
+void WHOIS(class irc::Command *command)//conaitre les infos sur la personne 
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(431);

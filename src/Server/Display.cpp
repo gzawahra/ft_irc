@@ -2,7 +2,7 @@
 #include "../Utils/Utils.hpp"
 #include <iostream>
 
-void irc::Display::clearScreen() { std::cout << "\033[2J" << std::flush; }
+void irc::Display::clearScreen() { std::cout << "\033[2J" << std::flush; }//clear the screen
 
 void irc::Display::update()
 {

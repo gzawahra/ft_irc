@@ -132,7 +132,7 @@ void irc::User::receive(Server *server)
 	{
 		char buffer[BUFFER_SIZE + 1];
 		ssize_t size;
-		if ((size = recv(fd, &buffer, BUFFER_SIZE, 0)) == -1)
+		if ((size = recv(fd, &buffer, BUFFER_SIZE, 0)) == -1)//recevoir un message depuis un socket
 			return;
 
 		if (size == 0)

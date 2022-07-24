@@ -9,16 +9,16 @@ namespace irc
 	class Config
 	{
 	private:
-		std::map<std::string, std::string> values;
+		std::map<std::string, std::string> values; // config value map
 
-		void init(std::string config);
+		void init(std::string config); // initialize server config
 
 	public:
-		Config();
-		Config(std::string config);
+		Config(); // default constructor
+		Config(std::string config); // copy constructor
 
-		void set(std::string key, std::string value);
-		std::string get(std::string key);
+		void set(std::string key, std::string value); // value setter
+		std::string get(std::string key); // value getter by key
 	};
 }
 #endif

@@ -49,7 +49,7 @@ void WHOWAS(class irc::Command *command)
 	return command->reply(369, command->getParameters()[0]);
 }
 
-void WHOIS(class irc::Command *command)
+void WHOIS(class irc::Command *command) // get specified user info
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(431);
@@ -76,7 +76,7 @@ void WHOIS(class irc::Command *command)
 	return command->reply(318, command->getParameters()[0]);
 }
 
-void WHO(class irc::Command *command)
+void WHO(class irc::Command *command) // get specified channel info
 {
 	bool is_star = false;
 	bool is_op = false;

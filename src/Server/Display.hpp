@@ -9,16 +9,16 @@ namespace irc
 	class Display
 	{
 	private:
-		std::map<unsigned char, std::string> lines;
+		std::map<unsigned char, std::string> lines; // lines to display map
 
-		void clearScreen();
-		void update();
+		void clearScreen(); // clear display
+		void update(); // update display
 
 	public:
-		Display();
+		Display(); // constructor and update
 
-		void set(unsigned char pos, std::string line);
-		void remove(unsigned char pos);
+		void set(unsigned char pos, std::string line); // line setter in display by position
+		void remove(unsigned char pos); //remove line by position
 	};
 }
 #endif

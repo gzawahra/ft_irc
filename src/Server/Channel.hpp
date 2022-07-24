@@ -12,30 +12,30 @@ namespace irc
 	class Channel
 	{
 	private:
-		std::string name;
-		std::string topic;
-		std::map<int, User *> users;
-		std::string mode;
-		std::map<int, std::string> user_mode;
-		std::string key;
-		std::string max_users;
-		std::vector<User *> invited;
+		std::string name; // channel name
+		std::string topic; // chanel topic
+		std::map<int, User *> users; // channel users
+		std::string mode; // channel mode
+		std::map<int, std::string> user_mode; // user mode
+		std::string key; // channel key in channels map
+		std::string max_users; // max users
+		std::vector<User *> invited; // vector of invited users
 
 	public:
-		Channel();
+		Channel(); // default constructor
 
-		void setName(std::string name);
-		std::string getName();
+		void setName(std::string name); // channel name setter
+		std::string getName(); // channel name getter
 
-		void setTopic(std::string topic);
-		std::string getTopic();
+		void setTopic(std::string topic); // topic setter
+		std::string getTopic(); // topic getter
 
-		void addUser(User &user);
-		void removeUser(User &user);
-		void removeUser(std::string const &nick);
-		std::vector<User *> getUsers();
-		bool isUser(User &user);
-		bool isOnChannel(std::string const &nick);
+		void addUser(User &user); // add user to channel by user object
+		void removeUser(User &user); // remove user by user object
+		void removeUser(std::string const &nick); // remove user by user nickname
+		std::vector<User *> getUsers(); // get all users of channel in a vector
+		bool isUser(User &user); // check if user exists in channel
+		bool isOnChannel(std::string const &nick); // check if
 
 		void setMode(std::string);
 		std::string getMode();

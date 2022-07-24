@@ -19,8 +19,8 @@ void TOPIC(irc::Command *command)
 	if (!command->getParameters().size())
 		return command->reply(461, command->getPrefix());
 
-	if (!command->getServer().isChannel(command->getParameters()[0]))
-		return command->reply(442, command->getParameters()[0]);
+	if (!command->getServer().isChannel(command->getParameters()[0])) // check if channel exists on server
+		return command->reply(403, command->getParameters()[0]); // reply error channel doesn't exist
 	irc::Channel &channel = command->getServer().getChannel(command->getParameters()[0]);
 	if (!channel.isUser(command->getUser()))
 		return command->reply(442, command->getParameters()[0]);

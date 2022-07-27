@@ -76,7 +76,7 @@ void post_registration(ircserv::Command *command) // message to show post user r
 	LUSERS(command);
 	MOTD(command);
 }
-void ircserv::User::dispatch() // 
+void ircserv::User::dispatch() // handle user registration commands and status
 {
 	UserStatus last_status = status;
 
@@ -127,7 +127,7 @@ void ircserv::User::dispatch() //
 			delete *it;
 		}
 }
-void ircserv::User::receive(Server *server)
+void ircserv::User::receive(Server *server) // receive user input and add to buffer then dispatch for handling
 {
 	{
 		char buffer[BUFFER_SIZE + 1];

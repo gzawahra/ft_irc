@@ -46,11 +46,11 @@ void TOPIC(ircserv::Command *command)
 	return command->reply(332, channel.getName(), channel.getTopic());
 }
 
-void PART(ircserv::Command *command)
+void PART(ircserv::Command *command)//leave chanel, if chanell isnt precised then leave room
 {
 	if (command->getParameters().size() == 0)
 	{
-		command->reply(461, "PART");
+		command->reply(461, "PART");// not enought parameter
 		return;
 	}
 	std::vector<std::string> channels = ircserv::split(command->getParameters()[0], ",");
@@ -64,16 +64,16 @@ void PART(ircserv::Command *command)
 			ircserv::Channel &chan = command->getServer().getChannel(channel);
 			if (!chan.isUser(command->getUser()))
 			{
-				command->reply(442, channel);
+				command->reply(442, channel);// when user try do a comand in a chanel where he isn't
 				continue;
 			}
-			chan.broadcast(command->getUser(), "PART " + channel + (command->getTrailer().size() ? " :" + command->getTrailer() : ""));
-			chan.removeUser(command->getUser());
+			chan.broadcast(command->getUser(), "PART " + channel + (command->getTrailer().size() ? " :" + command->getTrailer() : ""));//broadcast PART message
+			chan.removeUser(command->getUser());// remove user
 			if (chan.getUsers().size() == 0)
 				command->getServer().delChannel(chan);
 		}
 		else
-			command->reply(403, channel);
+			command->reply(403, channel);//chanel name isn't valide
 	}
 }
 
@@ -95,7 +95,7 @@ std::string getUsersToString(ircserv::Channel channel)
 	return users_string;
 }
 
-void NAMES(ircserv::Command *command)
+void NAMES(ircserv::Command *command)//names display nick of users from ome chnanel specified if no canel specified then return all name from all channel 
 {
 	std::vector<ircserv::Channel *> channels = command->getServer().getChannels();
 	if (command->getParameters().size() == 1)
@@ -122,7 +122,7 @@ void NAMES(ircserv::Command *command)
 			if (users_string.length())
 				command->reply(353, channel_mode, channel->getName(), getUsersToString(*channel));
 		}
-		command->reply(366, command->getParameters()[0]);
+		command->reply(366, command->getParameters()[0]);//
 	}
 	else
 	{
@@ -236,10 +236,10 @@ void leaveAllChannels(ircserv::Command *command)
 	}
 }
 
-void JOIN(ircserv::Command *command)
+void JOIN(ircserv::Command *command)//join a room
 {
 	if (command->getParameters().size() == 0)
-		return command->reply(461, "JOIN");
+		return command->reply(461, "JOIN");// not en
 	if (command->getParameters()[0] == "0")
 		return leaveAllChannels(command);
 	std::vector<std::string> channelsNames = ircserv::split(command->getParameters()[0], ",");
@@ -263,17 +263,17 @@ void JOIN(ircserv::Command *command)
 			std::string key = it_keys != keys.end() ? *it_keys++ : "";
 			if (channel.getMode().find('k') != std::string::npos && channel.getKey() != key)
 			{
-				command->reply(475, *it);
+				command->reply(475, *it);//canot join channel +k
 				continue;
 			}
 			if (channel.getMode().find('l') != std::string::npos && channel.getUsers().size() >= (size_t)atoi(channel.getMaxUsers().c_str()))
 			{
-				command->reply(471, *it);
+				command->reply(471, *it);//canot join a chanel +l
 				continue;
 			}
 			if (channel.getMode().find('i') != std::string::npos && !channel.isInvited(command->getUser()) && command->getUser().getMode().find('o') == std::string::npos)
 			{
-				command->reply(473, *it);
+				command->reply(473, *it);//canot join a chanel +i
 				continue;
 			}
 			channel.removeInvited(command->getUser());
@@ -296,7 +296,7 @@ void JOIN(ircserv::Command *command)
 	}
 }
 
-void INVITE(ircserv::Command *command)
+void INVITE(ircserv::Command *command)//invite a client to a room(operator cmd)
 {
 	if (command->getParameters().size() < 2)
 		return command->reply(461, "INVITE");

@@ -71,7 +71,7 @@ void ircserv::Server::displayChannels() // server terminal display channel displ
 }
 
 ircserv::Server::Server() // default constructor
-	: upTime(currentTime()), last_ping(std::time(0)) { display.set(0, "Welcome to our \033[1;37mIRC"); } // init time 
+	: upTime(currentTime()), last_ping(std::time(0)) { display.set(0, "\033[1;37mIRC-SERV V1.2"); } // init time 
 																										//  and display welcome message
 
 ircserv::Server::~Server() // destuctor

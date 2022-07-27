@@ -12,14 +12,14 @@
 #include <ctime>
 
 #define BUFFER_SIZE 4096
-#define MESSAGE_END "\n"
+#define MESSAGE_END "\n" // message end delimiter change to \r\n to make it work with irssi and weechat
 
 void PASS(ircserv::Command *command);
 void NICK(ircserv::Command *command);
 void USER(ircserv::Command *command);
 void OPER(ircserv::Command *command);
 void MODE(ircserv::Command *command);
-void SERVICE(ircserv::Command *command);
+void SERVICE(ircserv::Command *command); // Not implemented
 void QUIT(ircserv::Command *command);
 void SQUIT(ircserv::Command *command); // Not implemented
 
@@ -40,12 +40,12 @@ void VERSION(ircserv::Command *command);
 void STATS(ircserv::Command *command); // Not implemented
 void LINKS(ircserv::Command *command); // Not implemented
 void TIME(ircserv::Command *command);
-void CONNECT(ircserv::Command *command);
-void TRACE(ircserv::Command *command);
+void CONNECT(ircserv::Command *command); // Not implemented
+void TRACE(ircserv::Command *command); // Not implemented
 void ADMIN(ircserv::Command *command);
 void INFO(ircserv::Command *command);
 void SERVLIST(ircserv::Command *command); // Not implemented
-void SQUERY(ircserv::Command *command);
+void SQUERY(ircserv::Command *command); // Not implemented
 
 void WHO(ircserv::Command *command);
 void WHOIS(ircserv::Command *command);
@@ -54,7 +54,7 @@ void WHOWAS(ircserv::Command *command);
 void KILL(ircserv::Command *command);
 void PING(ircserv::Command *command);
 void PONG(ircserv::Command *command);
-void ERROR(ircserv::Command *command);
+void ERROR(ircserv::Command *command); // Not implemented
 
 void AWAY(ircserv::Command *command);
 void REHASH(ircserv::Command *command); // Not implemented
@@ -66,7 +66,7 @@ void WALLOPS(ircserv::Command *command);
 void USERHOST(ircserv::Command *command);
 void ISON(ircserv::Command *command);
 
-void post_registration(ircserv::Command *command)
+void post_registration(ircserv::Command *command) // message to show post user registration
 {
 	command->reply(1, command->getUser().getPrefix());
 	command->reply(2, command->getUser().getHostname(), command->getServer().getConfig().get("version"));
@@ -76,7 +76,7 @@ void post_registration(ircserv::Command *command)
 	LUSERS(command);
 	MOTD(command);
 }
-void ircserv::User::dispatch()
+void ircserv::User::dispatch() // 
 {
 	UserStatus last_status = status;
 
@@ -132,7 +132,7 @@ void ircserv::User::receive(Server *server)
 	{
 		char buffer[BUFFER_SIZE + 1];
 		ssize_t size;
-		if ((size = recv(fd, &buffer, BUFFER_SIZE, 0)) == -1)//recevoir un message depuis un socket
+		if ((size = recv(fd, &buffer, BUFFER_SIZE, 0)) == -1) // receive a message on a socket
 			return;
 
 		if (size == 0)
@@ -166,8 +166,8 @@ void ircserv::User::receive(Server *server)
 	}
 	dispatch();
 }
-void ircserv::User::write(std::string message) { waitingToSend.push_back(message); }
-void ircserv::User::push()
+void ircserv::User::write(std::string message) { waitingToSend.push_back(message); } // add message to send waiting list
+void ircserv::User::push() // send message
 {
 	if (!waitingToSend.size())
 		return;
@@ -275,20 +275,20 @@ ircserv::User::User(int fd, struct sockaddr_in address) : command_function(),
 	command_function["USERHOST"] = USERHOST;
 	command_function["ISON"] = ISON;
 }
-ircserv::User::~User() { close(fd); }
+ircserv::User::~User() { close(fd); } // destructor, close user fd
 
-void ircserv::User::sendTo(ircserv::User &toUser, std::string message) { toUser.write(":" + this->getPrefix() + " " + message); }
+void ircserv::User::sendTo(ircserv::User &toUser, std::string message) { toUser.write(":" + this->getPrefix() + " " + message); } // send message to a defined user
 
-void ircserv::User::setStatus(UserStatus status) { this->status = status; }
-void ircserv::User::setLastPing(time_t last_ping) { this->last_ping = last_ping; }
-void ircserv::User::setNickname(std::string nickname) { this->nickname = nickname; }
-void ircserv::User::setUsername(std::string username) { this->username = username; }
-void ircserv::User::setRealname(std::string realname) { this->realname = realname; }
+void ircserv::User::setStatus(UserStatus status) { this->status = status; } // status setter
+void ircserv::User::setLastPing(time_t last_ping) { this->last_ping = last_ping; } // last ping setter
+void ircserv::User::setNickname(std::string nickname) { this->nickname = nickname; } // nickname setter
+void ircserv::User::setUsername(std::string username) { this->username = username; } // username setter
+void ircserv::User::setRealname(std::string realname) { this->realname = realname; } // realname setter
 
-int ircserv::User::getFd() { return fd; }
-ircserv::UserStatus ircserv::User::getStatus() { return status; }
-time_t ircserv::User::getLastPing() { return last_ping; }
-std::string ircserv::User::getPrefix()
+int ircserv::User::getFd() { return fd; } // get user fd
+ircserv::UserStatus ircserv::User::getStatus() { return status; } // status getter
+time_t ircserv::User::getLastPing() { return last_ping; } // last ping getter
+std::string ircserv::User::getPrefix() // get prefixed !username or !address
 {
 	if (status == PASSWORD || status == REGISTER)
 		return std::string("");
@@ -302,31 +302,31 @@ std::string ircserv::User::getPrefix()
 	}
 	return prefix;
 }
-std::string ircserv::User::getHostaddr() { return hostname; }
-std::string ircserv::User::getHostname() { return hostname; }
+std::string ircserv::User::getHostaddr() { return hostname; } // get address
+std::string ircserv::User::getHostname() { return hostname; } // get hostname
 std::string ircserv::User::getHost()
 {
 	if (hostname.size())
 		return hostname;
 	return hostaddr;
 }
-std::string ircserv::User::getNickname() { return nickname; }
-std::string ircserv::User::getUsername() { return username; }
-std::string ircserv::User::getRealname() { return realname; }
+std::string ircserv::User::getNickname() { return nickname; } // nickname getter
+std::string ircserv::User::getUsername() { return username; } // username getter
+std::string ircserv::User::getRealname() { return realname; } // realname getter
 
-void ircserv::User::setMode(std::string mode) { this->mode = mode; }
-void ircserv::User::setPastnick(std::string pastnick) { this->pastnick = pastnick; }
-void ircserv::User::setLastChannel(std::string lastChannel) { this->lastChannel = lastChannel; }
-void ircserv::User::setDeleteMessage(std::string message) { deleteMessage = message; }
-void ircserv::User::setAwayMessage(std::string message) { awayMessage = message; }
+void ircserv::User::setMode(std::string mode) { this->mode = mode; } // mode setter
+void ircserv::User::setPastnick(std::string pastnick) { this->pastnick = pastnick; } // last nickname setter
+void ircserv::User::setLastChannel(std::string lastChannel) { this->lastChannel = lastChannel; } // last channel setter
+void ircserv::User::setDeleteMessage(std::string message) { deleteMessage = message; } // quit message setter
+void ircserv::User::setAwayMessage(std::string message) { awayMessage = message; } // away message setter
 
-std::string ircserv::User::getMode() { return mode; }
-std::string ircserv::User::getPastnick() { return pastnick; }
-std::string ircserv::User::getLastChannel() { return lastChannel; }
-std::string ircserv::User::getDeleteMessage()
+std::string ircserv::User::getMode() { return mode; } // user mode getter
+std::string ircserv::User::getPastnick() { return pastnick; } // past nickname getter
+std::string ircserv::User::getLastChannel() { return lastChannel; } // last channel getter
+std::string ircserv::User::getDeleteMessage() // custom quit message getter
 {
 	if (!deleteMessage.length())
 		return "Client Quit";
 	return deleteMessage;
 }
-std::string ircserv::User::getAwayMessage() { return awayMessage; }
+std::string ircserv::User::getAwayMessage() { return awayMessage; } // away message getter

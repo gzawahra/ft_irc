@@ -46,11 +46,11 @@ void TOPIC(ircserv::Command *command)
 	return command->reply(332, channel.getName(), channel.getTopic());
 }
 
-void PART(ircserv::Command *command)//leave chanel, if chanell isnt precised then leave room
+void PART(ircserv::Command *command) //leave channel or channels n comma seperated list
 {
 	if (command->getParameters().size() == 0)
 	{
-		command->reply(461, "PART");// not enought parameter
+		command->reply(461, "PART");// not enough parameter
 		return;
 	}
 	std::vector<std::string> channels = ircserv::split(command->getParameters()[0], ",");
@@ -64,7 +64,7 @@ void PART(ircserv::Command *command)//leave chanel, if chanell isnt precised the
 			ircserv::Channel &chan = command->getServer().getChannel(channel);
 			if (!chan.isUser(command->getUser()))
 			{
-				command->reply(442, channel);// when user try do a comand in a chanel where he isn't
+				command->reply(442, channel);// command in channel to which the user doesn't belong
 				continue;
 			}
 			chan.broadcast(command->getUser(), "PART " + channel + (command->getTrailer().size() ? " :" + command->getTrailer() : ""));//broadcast PART message
@@ -73,7 +73,7 @@ void PART(ircserv::Command *command)//leave chanel, if chanell isnt precised the
 				command->getServer().delChannel(chan);
 		}
 		else
-			command->reply(403, channel);//chanel name isn't valide
+			command->reply(403, channel);//channel name isn't valid
 	}
 }
 
@@ -95,7 +95,7 @@ std::string getUsersToString(ircserv::Channel channel)
 	return users_string;
 }
 
-void NAMES(ircserv::Command *command)//names display nick of users from ome chnanel specified if no canel specified then return all name from all channel 
+void NAMES(ircserv::Command *command) // names display nick of users from ome chnanel specified if no canel specified then return all name from all channel 
 {
 	std::vector<ircserv::Channel *> channels = command->getServer().getChannels();
 	if (command->getParameters().size() == 1)
@@ -160,7 +160,7 @@ void NAMES(ircserv::Command *command)//names display nick of users from ome chna
 	}
 }
 
-void LIST(ircserv::Command *command)
+void LIST(ircserv::Command *command) // list all users in a channel
 {
 	std::vector<ircserv::Channel *> channels = command->getServer().getChannels();
 	if (command->getParameters().size() == 1 && command->getParameters()[0] != "")

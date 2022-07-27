@@ -3,7 +3,7 @@
 #include "../../Utils/Utils.hpp"
 #include "../../Server/Server.hpp"
 
-void WHOWAS(class ircserv::Command *command)
+void WHOWAS(class ircserv::Command *command) // get info abouta departed user
 {
 	size_t pos = 0, tmp = 0, count = 0;
 	bool has_print = false, has_count = false;

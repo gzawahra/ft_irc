@@ -14,14 +14,14 @@
 
 //The TOPIC command lets a chanop set a channel’s topic, and lets anyone view the topic.
 //TOPIC <channel> [<topic>]
-void TOPIC(irc::Command *command)
+void TOPIC(ircserv::Command *command)
 {
 	if (!command->getParameters().size())
 		return command->reply(461, command->getPrefix());
 
 	if (!command->getServer().isChannel(command->getParameters()[0])) // check if channel exists on server
 		return command->reply(403, command->getParameters()[0]); // reply error channel doesn't exist
-	irc::Channel &channel = command->getServer().getChannel(command->getParameters()[0]);
+	ircserv::Channel &channel = command->getServer().getChannel(command->getParameters()[0]);
 	if (!channel.isUser(command->getUser()))
 		return command->reply(442, command->getParameters()[0]);
 
@@ -46,14 +46,14 @@ void TOPIC(irc::Command *command)
 	return command->reply(332, channel.getName(), channel.getTopic());
 }
 
-void PART(irc::Command *command)
+void PART(ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 	{
 		command->reply(461, "PART");
 		return;
 	}
-	std::vector<std::string> channels = irc::split(command->getParameters()[0], ",");
+	std::vector<std::string> channels = ircserv::split(command->getParameters()[0], ",");
 	for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)
 	{
 		std::string &channel = *it;
@@ -61,7 +61,7 @@ void PART(irc::Command *command)
 			continue;
 		if (command->getServer().isChannel(channel))
 		{
-			irc::Channel &chan = command->getServer().getChannel(channel);
+			ircserv::Channel &chan = command->getServer().getChannel(channel);
 			if (!chan.isUser(command->getUser()))
 			{
 				command->reply(442, channel);
@@ -77,12 +77,12 @@ void PART(irc::Command *command)
 	}
 }
 
-std::string getUsersToString(irc::Channel channel)
+std::string getUsersToString(ircserv::Channel channel)
 {
-	std::vector<irc::User *> users = channel.getUsers();
+	std::vector<ircserv::User *> users = channel.getUsers();
 	std::string users_string = "";
 
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 	{
 		if ((*it)->getMode().find('i') != std::string::npos)
 			continue;
@@ -95,13 +95,13 @@ std::string getUsersToString(irc::Channel channel)
 	return users_string;
 }
 
-void NAMES(irc::Command *command)
+void NAMES(ircserv::Command *command)
 {
-	std::vector<irc::Channel *> channels = command->getServer().getChannels();
+	std::vector<ircserv::Channel *> channels = command->getServer().getChannels();
 	if (command->getParameters().size() == 1)
 	{
-		irc::Channel *channel = NULL;
-		for (std::vector<irc::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+		ircserv::Channel *channel = NULL;
+		for (std::vector<ircserv::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
 			if ((*it)->getName() == command->getParameters()[0])
 			{
 				channel = *it;
@@ -126,9 +126,9 @@ void NAMES(irc::Command *command)
 	}
 	else
 	{
-		for (std::vector<irc::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+		for (std::vector<ircserv::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
 		{
-			irc::Channel *channel = *it;
+			ircserv::Channel *channel = *it;
 			if (channel->getMode().find('p') != std::string::npos)
 				continue;
 			std::string channel_mode;
@@ -143,9 +143,9 @@ void NAMES(irc::Command *command)
 				command->reply(353, channel_mode, channel->getName(), users_string);
 			command->reply(366, channel->getName());
 		}
-		std::vector<irc::User *> users = command->getServer().getUsers();
+		std::vector<ircserv::User *> users = command->getServer().getUsers();
 		std::string users_not_in_channels = "";
-		for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+		for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 			if ((*it)->getLastChannel() == "*")
 			{
 				if (users_not_in_channels.length())
@@ -160,28 +160,28 @@ void NAMES(irc::Command *command)
 	}
 }
 
-void LIST(irc::Command *command)
+void LIST(ircserv::Command *command)
 {
-	std::vector<irc::Channel *> channels = command->getServer().getChannels();
+	std::vector<ircserv::Channel *> channels = command->getServer().getChannels();
 	if (command->getParameters().size() == 1 && command->getParameters()[0] != "")
 	{
-		for (std::vector<irc::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
-			if (irc::strmatch((*it)->getName(), command->getParameters()[0]))
-				command->reply(322, (*it)->getName(), irc::toString((*it)->getUsers().size()), (*it)->getTopic());
+		for (std::vector<ircserv::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+			if (ircserv::strmatch((*it)->getName(), command->getParameters()[0]))
+				command->reply(322, (*it)->getName(), ircserv::toString((*it)->getUsers().size()), (*it)->getTopic());
 	}
 	else
-		for (std::vector<irc::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
-			command->reply(322, (*it)->getName(), irc::toString((*it)->getUsers().size()), (*it)->getTopic());
+		for (std::vector<ircserv::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+			command->reply(322, (*it)->getName(), ircserv::toString((*it)->getUsers().size()), (*it)->getTopic());
 	command->reply(323);
 }
 
-void KICK(irc::Command *command)
+void KICK(ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "KICK");
 
-	std::vector<std::string> channels = irc::split(command->getParameters()[0], ",");
-	std::vector<std::string> users = irc::split(command->getParameters()[1], ",");
+	std::vector<std::string> channels = ircserv::split(command->getParameters()[0], ",");
+	std::vector<std::string> users = ircserv::split(command->getParameters()[1], ",");
 	for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)
 	{
 		if (!command->getServer().isChannel(*it))
@@ -189,7 +189,7 @@ void KICK(irc::Command *command)
 			command->reply(403, *it);
 			continue;
 		}
-		irc::Channel &channel = command->getServer().getChannel(*it);
+		ircserv::Channel &channel = command->getServer().getChannel(*it);
 		if (channel.getUserMode(command->getUser()).find('O') == std::string::npos && channel.getUserMode(command->getUser()).find('o') == std::string::npos && command->getUser().getMode().find('o') == std::string::npos)
 		{
 			command->reply(482, *it);
@@ -208,12 +208,12 @@ void KICK(irc::Command *command)
 	}
 }
 
-std::string getUsersString(irc::Channel channel)
+std::string getUsersString(ircserv::Channel channel)
 {
-	std::vector<irc::User *> users = channel.getUsers();
+	std::vector<ircserv::User *> users = channel.getUsers();
 	std::string users_string = "";
 
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 	{
 		if (users_string.length())
 			users_string += " ";
@@ -224,10 +224,10 @@ std::string getUsersString(irc::Channel channel)
 	return users_string;
 }
 
-void leaveAllChannels(irc::Command *command)
+void leaveAllChannels(ircserv::Command *command)
 {
-	std::vector<irc::Channel *> channels = command->getServer().getChannels();
-	for (std::vector<irc::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+	std::vector<ircserv::Channel *> channels = command->getServer().getChannels();
+	for (std::vector<ircserv::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
 	{
 		(*it)->broadcast(command->getUser(), "PART " + (*it)->getName() + (command->getParameters().size() > 1 ? " :" + command->getParameters()[1] : ""));
 		(*it)->removeUser(command->getUser());
@@ -236,14 +236,14 @@ void leaveAllChannels(irc::Command *command)
 	}
 }
 
-void JOIN(irc::Command *command)
+void JOIN(ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "JOIN");
 	if (command->getParameters()[0] == "0")
 		return leaveAllChannels(command);
-	std::vector<std::string> channelsNames = irc::split(command->getParameters()[0], ",");
-	std::vector<std::string> keys = command->getParameters().size() > 1 ? irc::split(command->getParameters()[1], ",") : std::vector<std::string>();
+	std::vector<std::string> channelsNames = ircserv::split(command->getParameters()[0], ",");
+	std::vector<std::string> keys = command->getParameters().size() > 1 ? ircserv::split(command->getParameters()[1], ",") : std::vector<std::string>();
 	std::vector<std::string>::iterator it_keys = keys.begin();
 	for (std::vector<std::string>::iterator it = channelsNames.begin(); it != channelsNames.end(); ++it)
 	{
@@ -252,7 +252,7 @@ void JOIN(irc::Command *command)
 			command->reply(476, *it);
 			continue;
 		}
-		irc::Channel &channel = command->getServer().getChannel(*it);
+		ircserv::Channel &channel = command->getServer().getChannel(*it);
 		if (channel.getUsers().size() == 0)
 		{
 			channel.addUser(command->getUser());
@@ -296,7 +296,7 @@ void JOIN(irc::Command *command)
 	}
 }
 
-void INVITE(irc::Command *command)
+void INVITE(ircserv::Command *command)
 {
 	if (command->getParameters().size() < 2)
 		return command->reply(461, "INVITE");
@@ -309,7 +309,7 @@ void INVITE(irc::Command *command)
 
 	if (command->getServer().isChannel(command->getParameters()[1]))
 	{
-		irc::Channel &channel = command->getServer().getChannel(command->getParameters()[1]);
+		ircserv::Channel &channel = command->getServer().getChannel(command->getParameters()[1]);
 		if (channel.getMode().find('i') != std::string::npos && channel.getUserMode(command->getUser()).find('O') == std::string::npos && channel.getUserMode(command->getUser()).find('o') == std::string::npos && command->getUser().getMode().find('o') == std::string::npos)
 		{
 			command->reply(482, command->getParameters()[1]);

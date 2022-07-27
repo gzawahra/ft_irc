@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-namespace irc
+namespace ircserv
 {
 	class Display
 	{

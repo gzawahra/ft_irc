@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 
-namespace irc
+namespace ircserv
 {
 	class User;
 
@@ -35,25 +35,25 @@ namespace irc
 		void removeUser(std::string const &nick); // remove user by user nickname
 		std::vector<User *> getUsers(); // get all users of channel in a vector
 		bool isUser(User &user); // check if user exists in channel
-		bool isOnChannel(std::string const &nick); // check if
+		bool isOnChannel(std::string const &nick); // check if user is on channel using nick
 
-		void setMode(std::string);
-		std::string getMode();
+		void setMode(std::string); // channel mode setter
+		std::string getMode(); // channel mode getter
 
-		void setUserMode(User &user, std::string mode);
-		std::string getUserMode(User &user);
+		void setUserMode(User &user, std::string mode); // user mode setter
+		std::string getUserMode(User &user); // user mode getter
 
-		void setKey(std::string key);
-		std::string getKey();
+		void setKey(std::string key); //
+		std::string getKey(); //
 
-		void setMaxUsers(std::string max);
-		std::string getMaxUsers();
+		void setMaxUsers(std::string max); // max user setter
+		std::string getMaxUsers(); // max user getter
 
-		void addInvited(User &user);
-		bool isInvited(User &user);
-		void removeInvited(User &user);
+		void addInvited(User &user); // add user to invited users list
+		bool isInvited(User &user); // check if user is on invite list
+		void removeInvited(User &user); // remove user from invited users list
 
-		void broadcast(User &user, std::string message);
+		void broadcast(User &user, std::string message); // broadcast a message to all users
 	};
 
 }

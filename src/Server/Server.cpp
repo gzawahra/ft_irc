@@ -15,29 +15,29 @@
 #include <unistd.h>
 #include <algorithm>
 
-void irc::Server::acceptUser() // accept user on server.
+void ircserv::Server::acceptUser() // accept user on server.
 {
 	size_t max_user = atoi(config.get("max").c_str()); // get max number of users from config.
 	if (users.size() == max_user) // if max users atteined,
 		if (shutdown(fd, SHUT_RD) == -1) // close socket connection, SHUT_RD No more receptions.
 			return;
-	struct sockaddr_in address; // 
-	socklen_t csin_len = sizeof(address);
-	int fd = accept(this->fd, (struct sockaddr *)&address, &csin_len);
-	if (fd == -1)
+	struct sockaddr_in address; // address struct
+	socklen_t csin_len = sizeof(address); // address len
+	int fd = accept(this->fd, (struct sockaddr *)&address, &csin_len); // accept socket connection and 
+																	  //return a new fd to that socket
+	if (fd == -1) 
 		return;
-	users[fd] = new User(fd, address);
-	if (!config.get("password").length())
+	users[fd] = new User(fd, address); // create new user with fd and address
+	if (!config.get("password").length()) // check if user has authenticated with password
 		users[fd]->setStatus(REGISTER);
-
-	pfds.push_back(pollfd());
-	pfds.back().fd = fd;
-	pfds.back().events = POLLIN;
-
+	pfds.push_back(pollfd()); //add user fd to list of poll fds
+	pfds.back().fd = fd; 
+	pfds.back().events = POLLIN; // set event type as new data to be read available
+	// if debug enabled display new user info
 	if (DEBUG)
 		std::cout << "new User " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << " (" << fd << ")" << std::endl;
 }
-void irc::Server::sendPing() // send ping to user.
+void ircserv::Server::sendPing() // send ping to user.
 {
 	time_t current = std::time(0); // get current time.
 	int timeout = atoi(config.get("timeout").c_str()); // get timeout delay from config.
@@ -52,7 +52,7 @@ void irc::Server::sendPing() // send ping to user.
 			(*it).second->write("PING " + (*it).second->getNickname()); // send ping to user
 }
 
-void irc::Server::displayUsers() // server terminal display users.
+void ircserv::Server::displayUsers() // server terminal display users.
 {
 	char buffer[42]; // display buffer
 	sprintf(buffer, "%-4s %-9s %s", "FD", "Nickname", "Host"); // set title config.
@@ -63,25 +63,25 @@ void irc::Server::displayUsers() // server terminal display users.
 		display.set((*it).second->getFd(), buffer + (*it).second->getHost()); // display user
 	}
 }
-void irc::Server::displayChannels() // server terminal display channel display.
+void ircserv::Server::displayChannels() // server terminal display channel display.
 {
 	std::stringstream ss;
 	ss << "\nChannels: " << channels.size(); // display channels title.
 	display.set(2, ss.str()); // display channel number.
 }
 
-irc::Server::Server() // default constructor
+ircserv::Server::Server() // default constructor
 	: upTime(currentTime()), last_ping(std::time(0)) { display.set(0, "Welcome to our \033[1;37mIRC"); } // init time 
 																										//  and display welcome message
 
-irc::Server::~Server() // destuctor
+ircserv::Server::~Server() // destuctor
 {
 	std::vector<User *> users = getUsers(); // get all users to delete.
 	for (std::vector<User *>::iterator it = users.begin(); it != users.end(); ++it) // loop all users.
 		delUser(*(*it)); // delete current user.
 }
 
-void irc::Server::init()
+void ircserv::Server::init()
 {
 	int enable = 1; // set server enable to true
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) // socket(int domain, int type, int protocol); creates an endpoint for communication and returns a file 
@@ -124,9 +124,9 @@ void irc::Server::init()
 	// k = channel key (password), l = user limit.
 	config.set("channel_setmode", "kl");
 }
-void irc::Server::execute()
+void ircserv::Server::execute()
 {
-	std::vector<irc::User *> users = getUsers(); // get all users.
+	std::vector<ircserv::User *> users = getUsers(); // get all users.
 
 	int ping = atoi(config.get("ping").c_str()); // get ping delay.
 
@@ -148,20 +148,20 @@ void irc::Server::execute()
 					this->users[(*it).fd]->receive(this); //  receive it.
 	}
 
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it) // loop all users,
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it) // loop all users,
 		if ((*it)->getStatus() == DELETE) //if user is flagged for deletion
 			delUser(*(*it)); // delete them.
 	users = getUsers();// get all users
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it) // loop all users
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it) // loop all users
 		(*it)->push();
 	displayUsers(); // update server terminal user display
 }
 
-irc::Config &irc::Server::getConfig() { return config; } //server config getter.
+ircserv::Config &ircserv::Server::getConfig() { return config; } //server config getter.
 
-std::string irc::Server::getUpTime() { return upTime; } // server uptime getter.
+std::string ircserv::Server::getUpTime() { return upTime; } // server uptime getter.
 
-irc::User *irc::Server::getUser(std::string const &nick) // get user by nickname
+ircserv::User *ircserv::Server::getUser(std::string const &nick) // get user by nickname
 {
 	for (std::map<int, User *>::iterator it = users.begin(); it != users.end(); ++it) // loop all users.
 		if ((*it).second->getNickname() == nick) // if user found.
@@ -169,7 +169,7 @@ irc::User *irc::Server::getUser(std::string const &nick) // get user by nickname
 	return NULL; // else return NULL.
 }
 
-std::vector<irc::User *> irc::Server::getUsers() // get all users in a vector.
+std::vector<ircserv::User *> ircserv::Server::getUsers() // get all users in a vector.
 {
 	std::vector<User *> users = std::vector<User *>(); // user object vector.
 	for (std::map<int, User *>::iterator it = this->users.begin(); it != this->users.end(); ++it) // loop all users.
@@ -177,9 +177,9 @@ std::vector<irc::User *> irc::Server::getUsers() // get all users in a vector.
 	return users; // return user vector.
 }
 
-void irc::Server::delUser(User &user) // delete a user
+void ircserv::Server::delUser(User &user) // delete a user
 {
-	std::vector<irc::User *> broadcast_users = std::vector<irc::User *>(); // list of users to notify of user quit.
+	std::vector<ircserv::User *> broadcast_users = std::vector<ircserv::User *>(); // list of users to notify of user quit.
 	broadcast_users.push_back(&user); // notify the user to delete of their own departure.
 
 	std::vector<Channel> remove; // list of empty channels to delete because of user's departure.
@@ -188,11 +188,11 @@ void irc::Server::delUser(User &user) // delete a user
 		{
 			(*it).second.removeUser(user); // remove user from current loop channel channel.
 			
-			std::vector<irc::User *> users = it->second.getUsers(); // get all users in this channel.
+			std::vector<ircserv::User *> users = it->second.getUsers(); // get all users in this channel.
 			if (!users.size()) // if channel is empty after this user's departure,
 				remove.push_back((*it).second); //  add to delete list.
 			else
-				for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it) // loop all users in this channel
+				for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it) // loop all users in this channel
 					if (std::find(broadcast_users.begin(), broadcast_users.end(), *it) == broadcast_users.end()) // if user in channel doesn't belong to broadcast list,
 						broadcast_users.push_back(*it); // add them to broadcast list.
 		}
@@ -201,7 +201,7 @@ void irc::Server::delUser(User &user) // delete a user
 		delChannel(*it); // delete channel.
 
 	std::string message = "QUIT :" + user.getDeleteMessage(); // QUIT message to deisplay to users.
-	for (std::vector<irc::User *>::iterator it = broadcast_users.begin(); it != broadcast_users.end(); ++it)
+	for (std::vector<ircserv::User *>::iterator it = broadcast_users.begin(); it != broadcast_users.end(); ++it)
 		user.sendTo(*(*it), message); // broadcast quit message to all users.
 	user.push(); // 
 
@@ -217,8 +217,8 @@ void irc::Server::delUser(User &user) // delete a user
 	delete &user; // delete user.
 }
 
-bool irc::Server::isChannel(std::string const &name) { return channels.count(name); } // check if channel already exists in channel map.
-irc::Channel &irc::Server::getChannel(std::string name) // get a channel from channel map by name.
+bool ircserv::Server::isChannel(std::string const &name) { return channels.count(name); } // check if channel already exists in channel map.
+ircserv::Channel &ircserv::Server::getChannel(std::string name) // get a channel from channel map by name.
 {
 	bool exist = isChannel(name); // check if channel exists.
 	Channel &channel = channels[name]; // get channel by name from map.
@@ -229,15 +229,15 @@ irc::Channel &irc::Server::getChannel(std::string name) // get a channel from ch
 	}
 	return channel; // return channel object.
 }
-void irc::Server::delChannel(Channel channel) // delete channel.
+void ircserv::Server::delChannel(Channel channel) // delete channel.
 {
 	channels.erase(channel.getName()); // erase channel by name.
 	displayChannels(); // refresh channel number display in server terminal.
 }
-std::vector<irc::Channel *> irc::Server::getChannels() // get all channels as a vector.
+std::vector<ircserv::Channel *> ircserv::Server::getChannels() // get all channels as a vector.
 {
-	std::vector<irc::Channel *> channels = std::vector<irc::Channel *>(); // channels vector to return.
-	for (std::map<std::string, irc::Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
+	std::vector<ircserv::Channel *> channels = std::vector<ircserv::Channel *>(); // channels vector to return.
+	for (std::map<std::string, ircserv::Channel>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
 		channels.push_back(&(*it).second); // loop all channels and add to vector.
 	return channels;
 }

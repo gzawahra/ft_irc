@@ -174,7 +174,7 @@ std::string ERR_SASLABORTED() { return ":SASL authentication aborted"; }
 std::string ERR_SASLALREADY() { return ":You have already authenticated using SASL"; }
 std::string RPL_SASLMECHS(std::string mecha) { return mecha + " :are available SASL mechanisms"; }*/
 
-std::string irc::Command::getReplies(unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7)
+std::string ircserv::Command::getReplies(unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7)
 {
 	std::string target;
 	if (user->getStatus() == PASSWORD || user->getStatus() == REGISTER)
@@ -463,32 +463,6 @@ std::string irc::Command::getReplies(unsigned short code, std::string arg1, std:
 		return target + ERR_UMODEUNKNOWNFLAG();
 	case 502:
 		return target + ERR_USERSDONTMATCH();
-
-	/*IRCv3
-	case 670:
-		return target + RPL_STARTTLS();
-	case 691:
-		return target + ERR_STARTTLS();
-
-	case 900:
-		return target + RPL_LOGGEDIN(arg1, arg2, arg3);
-	case 901:
-		return target + RPL_LOGGEDOUT(arg1, arg2, arg3);
-	case 902:
-		return target + ERR_NICKLOCKED();
-	case 903:
-		return target + RPL_SASLSUCCESS();
-	case 904:
-		return target + ERR_SASLFAIL();
-	case 905:
-		return target + ERR_SASLTOOLONG();
-	case 906:
-		return target + ERR_SASLABORTED();
-	case 907:
-		return target + ERR_SASLALREADY();	
-	case 908:
-		return target + RPL_SASLMECHS(arg1);
-		*/
 	default:
 		return std::string();
 	}

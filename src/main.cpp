@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	irc::Server server = irc::Server(); // instantiate irc server type
+	ircserv::Server server = ircserv::Server(); // instantiate irc server type
 	signal(SIGINT, handler); //Sets the handler for signal sig. 
 							 // The signal handler can be set so that default handling will occur, 
 							 // signal is ignored, or a user-defined function is called.

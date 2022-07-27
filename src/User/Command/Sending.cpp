@@ -3,7 +3,7 @@
 #include "../Client.hpp"
 #include <algorithm>
 
-void NOTICE(irc::Command *command)
+void NOTICE(ircserv::Command *command)
 {
 	if (!command->getParameters().size())
 		return;
@@ -11,12 +11,12 @@ void NOTICE(irc::Command *command)
 		return;
 
 	std::string recipient = command->getParameters()[0];
-	std::vector<irc::User *> users;
+	std::vector<ircserv::User *> users;
 
 	if (*recipient.begin() == '#')
 		if (command->getServer().isChannel(recipient))
 		{
-			irc::Channel &channel = command->getServer().getChannel(recipient);
+			ircserv::Channel &channel = command->getServer().getChannel(recipient);
 
 			if (channel.getMode().find('n') != std::string::npos)
 				if (!channel.isUser(command->getUser()))
@@ -37,7 +37,7 @@ void NOTICE(irc::Command *command)
 			}
 
 			users = channel.getUsers();
-			std::vector<irc::User *>::iterator it = std::find(users.begin(), users.end(), &command->getUser());
+			std::vector<ircserv::User *>::iterator it = std::find(users.begin(), users.end(), &command->getUser());
 			if (it != users.end())
 				users.erase(it);
 		}
@@ -51,11 +51,11 @@ void NOTICE(irc::Command *command)
 			return;
 	}
 
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 		command->getUser().sendTo(*(*it), "NOTICE " + recipient + " :" + command->getTrailer());
 }
 
-void PRIVMSG(irc::Command *command)
+void PRIVMSG(ircserv::Command *command)
 {
 	if (!command->getParameters().size())
 		return command->reply(411);
@@ -63,12 +63,12 @@ void PRIVMSG(irc::Command *command)
 		return command->reply(412);
 
 	std::string recipient = command->getParameters()[0];
-	std::vector<irc::User *> users;
+	std::vector<ircserv::User *> users;
 
 	if (*recipient.begin() == '#')
 		if (command->getServer().isChannel(recipient))
 		{
-			irc::Channel &channel = command->getServer().getChannel(recipient);
+			ircserv::Channel &channel = command->getServer().getChannel(recipient);
 
 			if (channel.getMode().find('n') != std::string::npos)
 				if (!channel.isUser(command->getUser()))
@@ -89,7 +89,7 @@ void PRIVMSG(irc::Command *command)
 			}
 
 			users = channel.getUsers();
-			std::vector<irc::User *>::iterator it = std::find(users.begin(), users.end(), &command->getUser());
+			std::vector<ircserv::User *>::iterator it = std::find(users.begin(), users.end(), &command->getUser());
 			if (it != users.end())
 				users.erase(it);
 		}
@@ -103,7 +103,7 @@ void PRIVMSG(irc::Command *command)
 			return command->reply(401, recipient);
 	}
 
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 	{
 		if ((*it)->getMode().find('a') != std::string::npos)
 			command->reply(301, (*it)->getNickname(), (*it)->getAwayMessage());

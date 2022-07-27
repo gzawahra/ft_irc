@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 
-namespace irc
+namespace ircserv
 {
 	enum UserStatus
 	{

@@ -4,7 +4,7 @@
 #include <sstream>
 #include <cstdlib>
 
-void irc::Config::init(std::string config)
+void ircserv::Config::init(std::string config)
 {
 	std::ifstream ifs(config.c_str(), std::ifstream::in); // file iput stream
 	if (!ifs.good()) // if error in file stream
@@ -35,9 +35,9 @@ void irc::Config::init(std::string config)
 	ifs.close(); // close file stream in buffer
 }
 
-irc::Config::Config() { init("configs/default.config"); } // config constructor from default file
+ircserv::Config::Config() { init("configs/default.config"); } // config constructor from default file
 
-irc::Config::Config(std::string config) { init(config); } // copy config
+ircserv::Config::Config(std::string config) { init(config); } // copy config
 
-void irc::Config::set(std::string key, std::string value) { values[key] = value; } // set value by key
-std::string irc::Config::get(std::string key) { return values[key]; } // get value by key
+void ircserv::Config::set(std::string key, std::string value) { values[key] = value; } // set value by key
+std::string ircserv::Config::get(std::string key) { return values[key]; } // get value by key

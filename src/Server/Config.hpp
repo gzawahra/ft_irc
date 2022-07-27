@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-namespace irc
+namespace ircserv
 {
 	class Config
 	{

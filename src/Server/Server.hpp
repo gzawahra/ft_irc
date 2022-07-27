@@ -9,7 +9,7 @@
 #include <vector>
 #include <poll.h>
 
-namespace irc
+namespace ircserv
 {
 	class User;
 

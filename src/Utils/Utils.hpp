@@ -8,7 +8,7 @@
 #define DEBUG 0
 #endif
 
-namespace irc
+namespace ircserv
 {
 	std::string currentTime();
 

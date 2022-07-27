@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <sstream>
 
-std::string irc::currentTime()
+std::string ircserv::currentTime()
 {
 	time_t t = std::time(0);
 	struct tm *now = std::localtime(&t);
@@ -13,14 +13,14 @@ std::string irc::currentTime()
 	return time;
 }
 
-void irc::error(std::string message, bool stop)
+void ircserv::error(std::string message, bool stop)
 {
 	std::cerr << "error: " << message << std::endl;
 	if (stop)
 		exit(EXIT_FAILURE);
 }
 
-std::vector<std::string> irc::split(std::string str, std::string delimiter)
+std::vector<std::string> ircserv::split(std::string str, std::string delimiter)
 {
 	std::vector<std::string> values = std::vector<std::string>();
 
@@ -35,18 +35,18 @@ std::vector<std::string> irc::split(std::string str, std::string delimiter)
 	return values;
 }
 
-bool irc::isLetter(char c) { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); }
-bool irc::isSpecial(char c) { return (c >= '[' && c <= '`') || (c >= '{' && c <= '}'); }
-bool irc::isDigit(char c) { return (c >= '0' && c <= '9'); }
+bool ircserv::isLetter(char c) { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); }
+bool ircserv::isSpecial(char c) { return (c >= '[' && c <= '`') || (c >= '{' && c <= '}'); }
+bool ircserv::isDigit(char c) { return (c >= '0' && c <= '9'); }
 
-std::string irc::toString(size_t var)
+std::string ircserv::toString(size_t var)
 {
 	std::stringstream stream;
 	stream << var;
 	return stream.str();
 }
 
-bool irc::strmatch(std::string str, std::string pattern)
+bool ircserv::strmatch(std::string str, std::string pattern)
 {
 	size_t str_size = str.size();
 	size_t pattern_size = pattern.size();

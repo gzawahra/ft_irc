@@ -4,40 +4,40 @@
 #include "../../Server/Server.hpp"
 #include <algorithm>
 
-void USER(irc::Command *command)
+void USER(ircserv::Command *command)
 {
 	if (command->getParameters().size() < 3)
 		return command->reply(461, command->getPrefix());
-	if (command->getUser().getStatus() != irc::REGISTER)
+	if (command->getUser().getStatus() != ircserv::REGISTER)
 		return command->reply(462);
 
 	command->getUser().setUsername(command->getParameters()[0]);
 	command->getUser().setRealname(command->getTrailer());
 }
 
-void SQUIT(irc::Command *command) { (void)command; }
+void SQUIT(ircserv::Command *command) { (void)command; }
 
-void SERVICE(irc::Command *command) { (void)command; }
+void SERVICE(ircserv::Command *command) { (void)command; }
 
-void QUIT(irc::Command *command)
+void QUIT(ircserv::Command *command)
 {
 	if (command->getTrailer().length() > 1)
 		command->getUser().setDeleteMessage("QUIT :" + command->getTrailer());
-	command->getUser().setStatus(irc::DELETE);
+	command->getUser().setStatus(ircserv::DELETE);
 }
 
-void PASS(irc::Command *command)
+void PASS(ircserv::Command *command)
 {
 	if (!command->getParameters().size())
 		return command->reply(461);
-	if (command->getUser().getStatus() != irc::PASSWORD)
+	if (command->getUser().getStatus() != ircserv::PASSWORD)
 		return command->reply(462);
 
 	if (command->getServer().getConfig().get("password") == command->getParameters()[0])
-		command->getUser().setStatus(irc::REGISTER);
+		command->getUser().setStatus(ircserv::REGISTER);
 }
 
-void OPER(irc::Command *command)
+void OPER(ircserv::Command *command)
 {
 	if (command->getParameters().size() < 2)
 		return command->reply(461, "OPER");
@@ -55,7 +55,7 @@ void OPER(irc::Command *command)
 	}
 }
 
-void NICK(irc::Command *command)
+void NICK(ircserv::Command *command)
 {
 	if (!command->getParameters().size())
 		return command->reply(431);
@@ -68,36 +68,36 @@ void NICK(irc::Command *command)
 	if (nickname.length() > 9)
 		return command->reply(432, nickname);
 	size_t index = 0;
-	if (!irc::isLetter(nickname[index]) && !irc::isSpecial(nickname[index]))
+	if (!ircserv::isLetter(nickname[index]) && !ircserv::isSpecial(nickname[index]))
 		return command->reply(432, nickname);
 	++index;
 	for (; index < nickname.length(); ++index)
-		if (!irc::isLetter(nickname[index]) && !irc::isSpecial(nickname[index]) && !irc::isDigit(nickname[index]) && nickname[index] != '-')
+		if (!ircserv::isLetter(nickname[index]) && !ircserv::isSpecial(nickname[index]) && !ircserv::isDigit(nickname[index]) && nickname[index] != '-')
 			return command->reply(432, nickname);
 
-	std::vector<irc::User *> users = command->getServer().getUsers();
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); it++)
+	std::vector<ircserv::User *> users = command->getServer().getUsers();
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); it++)
 		if (nickname == (*it)->getNickname())
 			return command->reply(433, nickname);
 
 	if (command->getUser().getNickname().length())
 		command->getUser().setPastnick(" " + command->getUser().getNickname() + " " + command->getUser().getPastnick());
 
-	std::vector<irc::User *> broadcast_users = std::vector<irc::User *>();
+	std::vector<ircserv::User *> broadcast_users = std::vector<ircserv::User *>();
 	broadcast_users.push_back(&command->getUser());
 
-	std::vector<irc::Channel *> channels = command->getServer().getChannels();
-	for (std::vector<irc::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+	std::vector<ircserv::Channel *> channels = command->getServer().getChannels();
+	for (std::vector<ircserv::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
 		if ((*it)->isUser(command->getUser()))
 		{
-			std::vector<irc::User *> users = (*it)->getUsers();
-			for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+			std::vector<ircserv::User *> users = (*it)->getUsers();
+			for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 				if (std::find(broadcast_users.begin(), broadcast_users.end(), *it) == broadcast_users.end())
 					broadcast_users.push_back(*it);
 		}
 
 	std::string message = "NICK :" + nickname;
-	for (std::vector<irc::User *>::iterator it = broadcast_users.begin(); it != broadcast_users.end(); ++it)
+	for (std::vector<ircserv::User *>::iterator it = broadcast_users.begin(); it != broadcast_users.end(); ++it)
 		command->getUser().sendTo(*(*it), message);
 	command->getUser().setNickname(nickname);
 }
@@ -110,7 +110,7 @@ void check_togglemode(std::string *mode, char option, bool is_minus)
 		mode->push_back(option);
 }
 
-void check_setmode(std::string *mode, char option, bool is_minus, class irc::Command *command, size_t count)
+void check_setmode(std::string *mode, char option, bool is_minus, class ircserv::Command *command, size_t count)
 {
 	if (is_minus && mode->find(option) != std::string::npos)
 	{
@@ -129,7 +129,7 @@ void check_setmode(std::string *mode, char option, bool is_minus, class irc::Com
 		else
 		{
 			for (size_t index = 0; index != command->getParameters()[count].length(); index++)
-				if (!irc::isDigit(command->getParameters()[count][index]))
+				if (!ircserv::isDigit(command->getParameters()[count][index]))
 					return;
 			command->getServer().getChannel(command->getParameters()[0]).setMaxUsers(command->getParameters()[count]);
 		}
@@ -140,17 +140,17 @@ void check_setmode(std::string *mode, char option, bool is_minus, class irc::Com
 	else if (!is_minus && option == 'l' && mode->find(option) != std::string::npos)
 	{
 		for (size_t index = 0; index != command->getParameters()[count].length(); index++)
-			if (!irc::isDigit(command->getParameters()[count][index]))
+			if (!ircserv::isDigit(command->getParameters()[count][index]))
 				return;
 		command->getServer().getChannel(command->getParameters()[0]).setMaxUsers(command->getParameters()[count]);
 	}
 }
 
-void check_givemode(char option, bool is_minus, class irc::Command *command, size_t count)
+void check_givemode(char option, bool is_minus, class ircserv::Command *command, size_t count)
 {
-	irc::User *user = 0;
-	std::vector<irc::User *> users = command->getServer().getChannel(command->getParameters()[0]).getUsers();
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); it++)
+	ircserv::User *user = 0;
+	std::vector<ircserv::User *> users = command->getServer().getChannel(command->getParameters()[0]).getUsers();
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); it++)
 		if ((*it)->getNickname() == command->getParameters()[count])
 		{
 			user = (*it);
@@ -172,7 +172,7 @@ void check_givemode(char option, bool is_minus, class irc::Command *command, siz
 		return command->reply(324, command->getParameters()[0], "-" + std::string(1, option), command->getParameters()[count]);
 }
 
-void MODE_channel(class irc::Command *command)
+void MODE_channel(class ircserv::Command *command)
 {
 	if (!command->getServer().isChannel(command->getParameters()[0]))
 		return command->reply(403, command->getParameters()[0]);
@@ -236,9 +236,9 @@ void MODE_channel(class irc::Command *command)
 	return command->reply(324, command->getParameters()[0], "+" + mode, "");
 }
 
-void MODE_user(class irc::Command *command)
+void MODE_user(class ircserv::Command *command)
 {
-	irc::User *user = 0;
+	ircserv::User *user = 0;
 
 	if (command->getParameters()[0] == command->getUser().getNickname())
 		user = &command->getUser();
@@ -279,7 +279,7 @@ void MODE_user(class irc::Command *command)
 	return command->reply(*user, 221, "+" + mode);
 }
 
-void MODE(class irc::Command *command)
+void MODE(class ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "MODE");

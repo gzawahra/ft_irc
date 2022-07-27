@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace irc
+namespace ircserv
 {
 	class User;
 	class Server;

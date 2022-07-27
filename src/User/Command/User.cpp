@@ -3,7 +3,7 @@
 #include "../../Utils/Utils.hpp"
 #include "../../Server/Server.hpp"
 
-void WHOWAS(class irc::Command *command)
+void WHOWAS(class ircserv::Command *command)
 {
 	size_t pos = 0, tmp = 0, count = 0;
 	bool has_print = false, has_count = false;
@@ -15,7 +15,7 @@ void WHOWAS(class irc::Command *command)
 	{
 		for (size_t index = 0; index != command->getParameters()[1].length(); index++)
 		{
-			if (!irc::isDigit(command->getParameters()[1][index]))
+			if (!ircserv::isDigit(command->getParameters()[1][index]))
 				break ;
 			count += count * 10;
 			count += command->getParameters()[1][index] - 48;
@@ -23,8 +23,8 @@ void WHOWAS(class irc::Command *command)
 		}
 	}
 	
-	std::vector<irc::User *> users = command->getServer().getUsers();
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); it++)
+	std::vector<ircserv::User *> users = command->getServer().getUsers();
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); it++)
 	{
 		if (!has_count || (has_count && count != 0))
 		{
@@ -49,20 +49,20 @@ void WHOWAS(class irc::Command *command)
 	return command->reply(369, command->getParameters()[0]);
 }
 
-void WHOIS(class irc::Command *command) // get specified user info
+void WHOIS(class ircserv::Command *command) // get specified user info
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(431);
 
 	std::string channels_names;
-	std::vector<irc::Channel *> channels = command->getServer().getChannels();
+	std::vector<ircserv::Channel *> channels = command->getServer().getChannels();
 
-	std::vector<irc::User *>users = command->getServer().getUsers();
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+	std::vector<ircserv::User *>users = command->getServer().getUsers();
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 		if (command->getParameters()[0] == (*it)->getNickname())
 		{
 			command->reply(311, command->getParameters()[0], (*it)->getUsername(), (*it)->getHostname(), (*it)->getRealname());
-			for (std::vector<irc::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
+			for (std::vector<ircserv::Channel *>::iterator it = channels.begin(); it != channels.end(); ++it)
 				if (command->getUser().getMode().find('o') != std::string::npos || ((*it)->isOnChannel(command->getParameters()[0]) && command->getServer().getUser(command->getParameters()[0])->getMode().find('i') == std::string::npos))
 					channels_names += (*it)->getName() + " ";
 			if (channels_names.length())
@@ -76,7 +76,7 @@ void WHOIS(class irc::Command *command) // get specified user info
 	return command->reply(318, command->getParameters()[0]);
 }
 
-void WHO(class irc::Command *command) // get specified channel info
+void WHO(class ircserv::Command *command) // get specified channel info
 {
 	bool is_star = false;
 	bool is_op = false;
@@ -91,16 +91,16 @@ void WHO(class irc::Command *command) // get specified channel info
 	if (command->getParameters().size() > 1 && command->getParameters()[1] == "o")
 		is_op = true;
 
-	std::vector<irc::User *> users = command->getServer().getUsers();
+	std::vector<ircserv::User *> users = command->getServer().getUsers();
 
 	if (command->getParameters()[0][0] == '#')
 	{
 		if (!command->getServer().isChannel(command->getParameters()[0]))
 			command->reply(315, command->getUser().getUsername());
 
-		irc::Channel channel = command->getServer().getChannel(command->getParameters()[0]);
+		ircserv::Channel channel = command->getServer().getChannel(command->getParameters()[0]);
 
-		for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+		for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 		{
 			if (channel.isOnChannel((*it)->getNickname()))
 			{
@@ -122,7 +122,7 @@ void WHO(class irc::Command *command) // get specified channel info
 		return command->reply(315, command->getUser().getUsername());
 	}
 	
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 	{
 		std::string state;
 		if ((*it)->getMode().find('a') != std::string::npos)

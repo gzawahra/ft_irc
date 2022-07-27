@@ -6,30 +6,30 @@
 #include "../../Utils/Utils.hpp"
 #include "../../Server/Server.hpp"
 
-void WALLOPS(irc::Command *command)
+void WALLOPS(ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "WALLOPS");
 	if (command->getUser().getMode().find('o') == std::string::npos)
 		return;
 
-	std::vector<irc::User *> users = command->getServer().getUsers();
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); it++)
+	std::vector<ircserv::User *> users = command->getServer().getUsers();
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); it++)
 		if ((*it)->getMode().find("w") != std::string::npos)
 			command->getUser().sendTo(*(*it), "WALLOPS :" + command->getTrailer());
 }
 
-void USERS(irc::Command *command) { command->reply(446); }
+void USERS(ircserv::Command *command) { command->reply(446); }
 
-void USERHOST(irc::Command *command)
+void USERHOST(ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "USERHOST");
 
 	size_t len = (command->getParameters().size() > 5) ? 5 : command->getParameters().size();
-	std::vector<irc::User *> users = command->getServer().getUsers();
+	std::vector<ircserv::User *> users = command->getServer().getUsers();
 	for (size_t i = 0; i != len; i++)
-		for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); it++)
+		for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); it++)
 			if ((*it)->getNickname() == command->getParameters()[i])
 			{
 				command->reply(302, ((*it)->getNickname() + "=+~" + (*it)->getUsername() + "@" + (*it)->getHost()));
@@ -37,29 +37,29 @@ void USERHOST(irc::Command *command)
 			}
 }
 
-void SUMMON(irc::Command *command) { (void)command; }
+void SUMMON(ircserv::Command *command) { (void)command; }
 
-void RESTART(irc::Command *command) { (void)command; }
+void RESTART(ircserv::Command *command) { (void)command; }
 
-void REHASH(irc::Command *command) { (void)command; }
+void REHASH(ircserv::Command *command) { (void)command; }
 
-void ISON(irc::Command *command)
+void ISON(ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "USERHOST");
 
-	std::vector<std::string> nicknames = irc::split(command->getTrailer(), " ");
+	std::vector<std::string> nicknames = ircserv::split(command->getTrailer(), " ");
 	std::string ison = "";
-	std::vector<irc::User *> users = command->getServer().getUsers();
-	for (std::vector<irc::User *>::iterator it = users.begin(); it != users.end(); ++it)
+	std::vector<ircserv::User *> users = command->getServer().getUsers();
+	for (std::vector<ircserv::User *>::iterator it = users.begin(); it != users.end(); ++it)
 		if (std::find(nicknames.begin(), nicknames.end(), (*it)->getNickname()) != nicknames.end())
 			ison += (*it)->getNickname() + " ";
 	command->reply(303, ison);
 }
 
-void DIE(irc::Command *command) { (void)command; }
+void DIE(ircserv::Command *command) { (void)command; }
 
-void AWAY(irc::Command *command)
+void AWAY(ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 	{
@@ -74,33 +74,33 @@ void AWAY(irc::Command *command)
 	return command->reply(306);
 }
 
-void PONG(irc::Command *command)
+void PONG(ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(409);
 	command->getUser().setLastPing(std::time(0));
 }
 
-void PING(class irc::Command *command)
+void PING(class ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(409);
 	command->getUser().sendTo(command->getUser(), "PONG :" + command->getParameters()[0]);
 }
 
-void KILL(irc::Command *command)
+void KILL(ircserv::Command *command)
 {
 	if (command->getParameters().size() == 0 || command->getTrailer().length() == 0)
 		return command->reply(461, "KILL");
 	if (command->getUser().getMode().find('o') == std::string::npos)
 		return command->reply(481);
 
-	irc::User *user = command->getServer().getUser(command->getParameters()[0]);
+	ircserv::User *user = command->getServer().getUser(command->getParameters()[0]);
 	if (!user)
 		return command->reply(401, command->getParameters()[0]);
 	user->setDeleteMessage(command->getTrailer());
-	user->setStatus(irc::DELETE);
+	user->setStatus(ircserv::DELETE);
 	command->getUser().sendTo(*user, "KILL :" + command->getTrailer());
 }
 
-void ERROR(irc::Command *command) { (void)command; }
+void ERROR(ircserv::Command *command) { (void)command; }

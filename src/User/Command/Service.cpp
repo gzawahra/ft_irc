@@ -1,4 +1,4 @@
 #include "Command.hpp"
 
-void SERVLIST(ircserv::Command *command) { (void)command; }
-void SQUERY(ircserv::Command *command) { (void)command; }
+void SERVLIST(ircserv::Command *command) { (void)command; } // Not implemented
+void SQUERY(ircserv::Command *command) { (void)command; } // Not implemented

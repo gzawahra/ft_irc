@@ -4,7 +4,7 @@
 #include "../../Server/Server.hpp"
 #include <algorithm>
 
-void USER(ircserv::Command *command)
+void USER(ircserv::Command *command) // 
 {
 	if (command->getParameters().size() < 3)
 		return command->reply(461, command->getPrefix());
@@ -15,9 +15,9 @@ void USER(ircserv::Command *command)
 	command->getUser().setRealname(command->getTrailer());
 }
 
-void SQUIT(ircserv::Command *command) { (void)command; }
+void SQUIT(ircserv::Command *command) { (void)command; } // Not implemented
 
-void SERVICE(ircserv::Command *command) { (void)command; }
+void SERVICE(ircserv::Command *command) { (void)command; } // Not implemented
 
 void QUIT(ircserv::Command *command)
 {
@@ -26,7 +26,7 @@ void QUIT(ircserv::Command *command)
 	command->getUser().setStatus(ircserv::DELETE);
 }
 
-void PASS(ircserv::Command *command)
+void PASS(ircserv::Command *command) // allows a user to set password
 {
 	if (!command->getParameters().size())
 		return command->reply(461);
@@ -37,7 +37,7 @@ void PASS(ircserv::Command *command)
 		command->getUser().setStatus(ircserv::REGISTER);
 }
 
-void OPER(ircserv::Command *command)
+void OPER(ircserv::Command *command) // authenticate a user an IRC operator on the server/network
 {
 	if (command->getParameters().size() < 2)
 		return command->reply(461, "OPER");
@@ -55,7 +55,7 @@ void OPER(ircserv::Command *command)
 	}
 }
 
-void NICK(ircserv::Command *command)
+void NICK(ircserv::Command *command) // allows a client to change their server nickname
 {
 	if (!command->getParameters().size())
 		return command->reply(431);
@@ -172,7 +172,7 @@ void check_givemode(char option, bool is_minus, class ircserv::Command *command,
 		return command->reply(324, command->getParameters()[0], "-" + std::string(1, option), command->getParameters()[count]);
 }
 
-void MODE_channel(class ircserv::Command *command)
+void MODE_channel(class ircserv::Command *command) // mode command channel variation handling
 {
 	if (!command->getServer().isChannel(command->getParameters()[0]))
 		return command->reply(403, command->getParameters()[0]);
@@ -236,7 +236,7 @@ void MODE_channel(class ircserv::Command *command)
 	return command->reply(324, command->getParameters()[0], "+" + mode, "");
 }
 
-void MODE_user(class ircserv::Command *command)
+void MODE_user(class ircserv::Command *command) // mode command user variation handling
 {
 	ircserv::User *user = 0;
 
@@ -279,7 +279,7 @@ void MODE_user(class ircserv::Command *command)
 	return command->reply(*user, 221, "+" + mode);
 }
 
-void MODE(class ircserv::Command *command)
+void MODE(class ircserv::Command *command) // can be used to set both user and channel flags
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "MODE");

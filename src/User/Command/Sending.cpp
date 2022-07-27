@@ -3,7 +3,7 @@
 #include "../Client.hpp"
 #include <algorithm>
 
-void NOTICE(ircserv::Command *command)
+void NOTICE(ircserv::Command *command) // works similar to PRIVMSG but must never be repliedd to with automatic messages
 {
 	if (!command->getParameters().size())
 		return;
@@ -55,7 +55,7 @@ void NOTICE(ircserv::Command *command)
 		command->getUser().sendTo(*(*it), "NOTICE " + recipient + " :" + command->getTrailer());
 }
 
-void PRIVMSG(ircserv::Command *command)
+void PRIVMSG(ircserv::Command *command) // send a message to channel or to a as a private message to a user
 {
 	if (!command->getParameters().size())
 		return command->reply(411);

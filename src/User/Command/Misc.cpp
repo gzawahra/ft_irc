@@ -6,7 +6,7 @@
 #include "../../Utils/Utils.hpp"
 #include "../../Server/Server.hpp"
 
-void WALLOPS(ircserv::Command *command)
+void WALLOPS(ircserv::Command *command) // send message to all operators on the server
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "WALLOPS");
@@ -19,9 +19,9 @@ void WALLOPS(ircserv::Command *command)
 			command->getUser().sendTo(*(*it), "WALLOPS :" + command->getTrailer());
 }
 
-void USERS(ircserv::Command *command) { command->reply(446); }
+void USERS(ircserv::Command *command) { command->reply(446); } // not implemented return a USERS has been disabled message.
 
-void USERHOST(ircserv::Command *command)
+void USERHOST(ircserv::Command *command) // returns info about the nicknames specified
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "USERHOST");
@@ -37,13 +37,13 @@ void USERHOST(ircserv::Command *command)
 			}
 }
 
-void SUMMON(ircserv::Command *command) { (void)command; }
+void SUMMON(ircserv::Command *command) { (void)command; } // Not implemented
 
-void RESTART(ircserv::Command *command) { (void)command; }
+void RESTART(ircserv::Command *command) { (void)command; } // Not implemented
 
-void REHASH(ircserv::Command *command) { (void)command; }
+void REHASH(ircserv::Command *command) { (void)command; } // Not implemented
 
-void ISON(ircserv::Command *command)
+void ISON(ircserv::Command *command) // check if user or users are connected to the server
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(461, "USERHOST");
@@ -57,9 +57,9 @@ void ISON(ircserv::Command *command)
 	command->reply(303, ison);
 }
 
-void DIE(ircserv::Command *command) { (void)command; }
+void DIE(ircserv::Command *command) { (void)command; } // Not implemented
 
-void AWAY(ircserv::Command *command)
+void AWAY(ircserv::Command *command) // set a message for automatic replies to privmsg to user.
 {
 	if (command->getParameters().size() == 0)
 	{
@@ -74,21 +74,21 @@ void AWAY(ircserv::Command *command)
 	return command->reply(306);
 }
 
-void PONG(ircserv::Command *command)
+void PONG(ircserv::Command *command) // reply to a ping command
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(409);
 	command->getUser().setLastPing(std::time(0));
 }
 
-void PING(class ircserv::Command *command)
+void PING(class ircserv::Command *command) // PING  command to ping a server. the server replies with a pong
 {
 	if (command->getParameters().size() == 0)
 		return command->reply(409);
 	command->getUser().sendTo(command->getUser(), "PONG :" + command->getParameters()[0]);
 }
 
-void KILL(ircserv::Command *command)
+void KILL(ircserv::Command *command) // forcibly remove a client from the server can only be exeuted by OPERs
 {
 	if (command->getParameters().size() == 0 || command->getTrailer().length() == 0)
 		return command->reply(461, "KILL");
@@ -103,4 +103,4 @@ void KILL(ircserv::Command *command)
 	command->getUser().sendTo(*user, "KILL :" + command->getTrailer());
 }
 
-void ERROR(ircserv::Command *command) { (void)command; }
+void ERROR(ircserv::Command *command) { (void)command; } // Not implemented

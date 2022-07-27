@@ -3,15 +3,15 @@
 #include "../../Utils/Utils.hpp"
 #include "../Client.hpp"
 
-void VERSION(ircserv::Command *command) { command->reply(351, command->getServer().getConfig().get("version"), command->getServer().getConfig().get("name"), "boo"); }
+void VERSION(ircserv::Command *command) { command->reply(351, command->getServer().getConfig().get("version"), command->getServer().getConfig().get("name"), "."); } // reply with server version
 
-void TRACE(ircserv::Command *command) { (void)command; }
+void TRACE(ircserv::Command *command) { (void)command; } // Not implemented
 
-void TIME(ircserv::Command *command) { command->reply(391, command->getServer().getConfig().get("name"), ircserv::currentTime()); }
+void TIME(ircserv::Command *command) { command->reply(391, command->getServer().getConfig().get("name"), ircserv::currentTime()); } // get current server time
 
-void STATS(ircserv::Command *command) { (void)command; }
+void STATS(ircserv::Command *command) { (void)command; } // Not implemented
 
-void MOTD(ircserv::Command *command)
+void MOTD(ircserv::Command *command) // print welcome word of the day
 {
 	if (!command->getServer().getConfig().get("motd").length())
 		return command->reply(422);
@@ -23,7 +23,7 @@ void MOTD(ircserv::Command *command)
 	command->reply(376);
 }
 
-void LUSERS(ircserv::Command *command)
+void LUSERS(ircserv::Command *command) // Return statistics about the size of the network etc...
 {
 	size_t vis_users = 0, invis_users = 0, op_users = 0, unk_users = 0, channels;
 
@@ -51,9 +51,9 @@ void LUSERS(ircserv::Command *command)
 	command->reply(255, ircserv::toString(vis_users + invis_users), "0");
 }
 
-void LINKS(ircserv::Command *command) { (void)command; }
+void LINKS(ircserv::Command *command) { (void)command; } // Not implemented
 
-void INFO(ircserv::Command *command)
+void INFO(ircserv::Command *command) //returns info about the server
 {
 	std::vector<std::string> motd = ircserv::split(command->getServer().getConfig().get("info"), "\n");
 	for (std::vector<std::string>::iterator it = motd.begin(); it != motd.end(); ++it)
@@ -61,9 +61,9 @@ void INFO(ircserv::Command *command)
 	command->reply(374);
 }
 
-void CONNECT(ircserv::Command *command) { (void)command; }
+void CONNECT(ircserv::Command *command) { (void)command; } // Not implemented
 
-void ADMIN(ircserv::Command *command)
+void ADMIN(ircserv::Command *command) // returns info about the admns of the server
 {
 	command->reply(256, command->getServer().getConfig().get("name"));
 
